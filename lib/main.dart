@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Katit Title bar',
+      title: 'Katit',
       theme: lightTheme, // Light theme applied by default
       darkTheme: darkTheme, // Dark theme configuration
       themeMode:
@@ -51,17 +51,85 @@ class MyApp extends StatelessWidget {
       home: Builder(
         builder: (context) {
           return Scaffold(
-            backgroundColor:
-                Theme.of(context).colorScheme.surface, // Should be grey[800]
-            body: Center(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            body: Column(
+              children: [
+                Expanded(flex: 1, child: TopBar()),
+                Expanded(flex: 7, child: PlayerArea()),
+                Expanded(flex: 2, child: BottomBar()),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class TopBar extends StatelessWidget {
+  const TopBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+      color: Theme.of(context).colorScheme.surface,
+      child: Row(
+        children: [
+          Container(
+            color: Colors.red,
+            child: Center(
               child: Text(
                 'Katit',
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
             ),
-          );
-        },
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.center,
+              child: Text('Select Source'),
+            ),
+          ),
+          Container(color: Colors.deepPurple, child: Text('Clear')),
+        ],
       ),
+    );
+  }
+}
+
+class PlayerArea extends StatefulWidget {
+  const PlayerArea({super.key});
+
+  @override
+  State<PlayerArea> createState() => _PlayerAreaState();
+}
+
+class _PlayerAreaState extends State<PlayerArea> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.grey[100],
+      alignment: Alignment.center,
+      child: Text('Player Area'),
+    );
+  }
+}
+
+class BottomBar extends StatefulWidget {
+  const BottomBar({super.key});
+
+  @override
+  State<BottomBar> createState() => _BottomBarState();
+}
+
+class _BottomBarState extends State<BottomBar> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black,
+      alignment: Alignment.center,
+      child: Text('Bottom Bar', style: TextStyle(color: Colors.white)),
     );
   }
 }

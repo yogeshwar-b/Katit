@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:window_size/window_size.dart';
+import 'package:file_picker/file_picker.dart';
 
 final ThemeData lightTheme = ThemeData(
   colorScheme: ColorScheme.light(
@@ -12,6 +13,12 @@ final ThemeData lightTheme = ThemeData(
   ),
   textTheme: TextTheme(
     headlineLarge: TextStyle(fontSize: 60, color: Colors.black),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.green,
+      foregroundColor: Colors.purple,
+    ),
   ),
 );
 
@@ -26,6 +33,12 @@ final ThemeData darkTheme = ThemeData(
   ),
   textTheme: TextTheme(
     headlineLarge: TextStyle(fontSize: 60, color: Colors.white),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.deepPurple, // Red background
+      foregroundColor: Colors.white, // White text
+    ),
   ),
 );
 final appTitle = "Katit";
@@ -68,6 +81,22 @@ class MyApp extends StatelessWidget {
 
 class TopBar extends StatelessWidget {
   const TopBar({super.key});
+  Future<void> _pickFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.any,
+      );
+
+      if (result != null) {
+        String filePath = result.files.single.path!;
+        print('Selected file path: $filePath');
+      } else {
+        print('File selection canceled');
+      }
+    } catch (e) {
+      print('Error picking file: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,10 +117,15 @@ class TopBar extends StatelessWidget {
           Expanded(
             child: Align(
               alignment: Alignment.center,
-              child: Text('Select Source'),
+              child: ElevatedButton(
+                onPressed: () => {_pickFile()},
+                child: Text("Select Source"),
+              ),
             ),
           ),
-          Container(color: Colors.deepPurple, child: Text('Clear')),
+          Container(
+            child: ElevatedButton(onPressed: () => {}, child: Text("Clear")),
+          ),
         ],
       ),
     );
@@ -109,7 +143,7 @@ class _PlayerAreaState extends State<PlayerArea> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey[100],
+      color: Colors.grey[600],
       alignment: Alignment.center,
       child: Text('Player Area'),
     );

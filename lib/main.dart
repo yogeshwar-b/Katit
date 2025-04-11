@@ -15,7 +15,7 @@ final ThemeData lightTheme = ThemeData(
     onSurface: Colors.black,
   ),
   textTheme: TextTheme(
-    headlineLarge: TextStyle(fontSize: 60, color: Colors.black),
+    headlineLarge: TextStyle(fontSize: 45, color: Colors.black),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
@@ -35,7 +35,7 @@ final ThemeData darkTheme = ThemeData(
     onSurface: Colors.white,
   ),
   textTheme: TextTheme(
-    headlineLarge: TextStyle(fontSize: 60, color: Colors.white),
+    headlineLarge: TextStyle(fontSize: 45, color: Colors.white),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
@@ -133,7 +133,7 @@ class TopBar extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            color: Colors.red,
+            // color: Colors.red,
             child: Center(
               child: Text(
                 'Katit',
@@ -234,23 +234,14 @@ class _LocalAssetVideoState extends State<_LocalAssetVideo> {
       return const CircularProgressIndicator();
     }
 
-    return SingleChildScrollView(
-      child: Column(
+    return AspectRatio(
+      aspectRatio: _controller!.value.aspectRatio,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
         children: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(20),
-            child: AspectRatio(
-              aspectRatio: _controller!.value.aspectRatio,
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: <Widget>[
-                  VideoPlayer(_controller!),
-                  _ControlsOverlay(controller: _controller!),
-                  VideoProgressIndicator(_controller!, allowScrubbing: true),
-                ],
-              ),
-            ),
-          ),
+          VideoPlayer(_controller!),
+          _ControlsOverlay(controller: _controller!),
+          VideoProgressIndicator(_controller!, allowScrubbing: true),
         ],
       ),
     );

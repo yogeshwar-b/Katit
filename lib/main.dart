@@ -92,6 +92,9 @@ class _MyAppState extends State<MyApp> {
                   child: TopBar(changeCurrentFilePath: _changeCurrentFilePath),
                 ),
                 Expanded(flex: 7, child: PlayerArea(filePath: currentFilePath)),
+                currentFilePath.isNotEmpty
+                    ? Text(currentFilePath)
+                    : const SizedBox.shrink(),
                 Expanded(flex: 2, child: BottomBar()),
               ],
             ),
@@ -150,7 +153,10 @@ class TopBar extends StatelessWidget {
               ),
             ),
           ),
-          ElevatedButton(onPressed: () => {}, child: Text("Clear")),
+          ElevatedButton(
+            onPressed: () => {changeCurrentFilePath("")},
+            child: Text("Clear"),
+          ),
         ],
       ),
     );
@@ -168,11 +174,7 @@ class PlayerArea extends StatefulWidget {
 class _PlayerAreaState extends State<PlayerArea> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey[600],
-      alignment: Alignment.center,
-      child: _LocalAssetVideo(filePath: widget.filePath),
-    );
+    return _LocalAssetVideo(filePath: widget.filePath);
   }
 }
 
@@ -197,7 +199,7 @@ class _LocalAssetVideoState extends State<_LocalAssetVideo> {
   @override
   void didUpdateWidget(covariant _LocalAssetVideo oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.filePath != oldWidget.filePath && widget.filePath.isNotEmpty) {
+    if (widget.filePath != oldWidget.filePath) {
       _initializeController(widget.filePath);
     }
   }
@@ -206,16 +208,21 @@ class _LocalAssetVideoState extends State<_LocalAssetVideo> {
     if (_controller != null) {
       await _controller!.pause();
       await _controller!.dispose();
+      setState(() {
+        _controller = null;
+      });
     }
 
-    setState(() {
-      _controller = VideoPlayerController.file(File(path));
-    });
+    if (path.isNotEmpty) {
+      setState(() {
+        _controller = VideoPlayerController.file(File(path));
+      });
 
-    await _controller!.initialize();
-    _controller!.setLooping(true);
-    _controller!.play();
-    setState(() {});
+      await _controller!.initialize();
+      _controller!.setLooping(true);
+      _controller!.play();
+      setState(() {});
+    }
   }
 
   @override
@@ -227,11 +234,11 @@ class _LocalAssetVideoState extends State<_LocalAssetVideo> {
   @override
   Widget build(BuildContext context) {
     if (widget.filePath.isEmpty) {
-      return const Text("No file selected");
+      return const Center(child: Text("No file selected"));
     }
 
     if (_controller == null || !_controller!.value.isInitialized) {
-      return const CircularProgressIndicator();
+      return const Center(child: CircularProgressIndicator());
     }
 
     return AspectRatio(
